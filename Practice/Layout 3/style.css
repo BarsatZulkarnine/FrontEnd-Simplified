@@ -1,0 +1,36 @@
+*{
+    box-sizing: border-box;
+}
+.container{
+    border: 4px lightgray solid;
+   
+    padding:24px 24px 0 24px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.box{
+    border: 4px lightgray solid;
+
+    margin-bottom:24px;
+   
+   
+}
+.box-large{
+    width: 45%;
+}
+
+.box-small{
+height: 50px;
+
+}
+.box-wrapper{
+    width: 45%;
+
+}
+
+.row{
+    display: flex;
+    width: 100%;
+    max-width: 1000px
+}

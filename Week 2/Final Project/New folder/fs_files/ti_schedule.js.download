@@ -1,0 +1,592 @@
+$(function() {
+
+
+	$(".ti_schedule_tabs_nav").on("click", ".ti_schedule_tabs_nav_day", function(event){
+		$('.ti_schedule_tabs_nav_day.selected').removeClass('selected')
+		$(this).addClass('selected');
+
+		let schedule_day = parseInt($(this).attr('data-schedule-day'));
+		// const schedule_day = new Date(Date.UTC(2021, 9, day))
+		let day_label = new Date(2021, 9, schedule_day).toLocaleString(undefined,{month: "long", day: "numeric"});
+		$('.ti_schedule_tab_heading').text(day_label)
+
+		RenderSchedule($('.ti_schedule_tabs_matches'), GetAllMatchesOnDay(schedule_day))
+
+	});
+
+	console.log("bukka loves timezones :)");
+	
+
+	setTimeout(function(){
+	   GetLeagueData();
+	}, 2000)
+
+	$('.ti_brackets_toggle_fullscreen').click(function(){
+		
+		ToggleMenuFullscreen(!$('.ti10_menu_content').hasClass('fullscreen'))
+	});
+
+	$('#brackets_color_code_toggle').click(function(){
+		$('.ti10_brackets').toggleClass('ti_color_code_days')
+	});
+
+
+	const slider = document.querySelector('.ti10_brackets');
+	let isDown = false;
+	let startX;
+	let scrollLeft;
+
+	slider.addEventListener('mousedown', (e) => {
+	  isDown = true;
+	  slider.classList.add('active');
+	  startX = e.pageX - slider.offsetLeft;
+	  scrollLeft = slider.scrollLeft;
+	});
+	slider.addEventListener('mouseleave', () => {
+	  isDown = false;
+	  slider.classList.remove('active');
+	});
+	slider.addEventListener('mouseup', () => {
+	  isDown = false;
+	  slider.classList.remove('active');
+	});
+	slider.addEventListener('mousemove', (e) => {
+	  if(!isDown) return;
+	  e.preventDefault();
+	  const x = e.pageX - slider.offsetLeft;
+	  const walk = (x - startX) * 3; //scroll-fast
+	  slider.scrollLeft = scrollLeft - walk;
+	});
+});
+
+
+function ToggleMenuFullscreen(on){
+	if (on) {
+		$('.ti10_menu_content').addClass('fullscreen')
+		$('.ti_brackets_toggle_fullscreen').text('MINIMIZE')
+	}else{
+		$('.ti10_menu_content').removeClass('fullscreen')
+		$('.ti_brackets_toggle_fullscreen').text('FULLSCREEN')
+	}
+}
+
+
+let local_league_data = [];
+function GetLeagueData() {
+	$.ajax({
+		type: 'GET',
+		cache: false,
+		url: location.protocol + '//'+EBS_URL+'/league/13256',
+		success: function(body){
+			// RenderSchedule(body);
+			local_league_data = body;
+			
+			RenderScheduleNav()
+
+			// let schedule_day = parseInt($('.ti_schedule_tabs_nav>div.selected').attr('data-schedule-day'));
+			// RenderSchedule($('.ti_schedule_tabs_matches'), GetAllMatchesOnDay(schedule_day))
+
+
+
+
+			if (testing && false) {
+				RenderGroupStandings($('.ti_group_a'), TEST_TEAM_STANDINGS);
+				RenderGroupStandings($('.ti_group_b'), TEST_TEAM_STANDINGS);
+				RenderBrackets(body[2]['nodes']);
+
+			}else{
+				RenderGroupStandings($('.ti_group_a'), body[0]['team_standings']);
+				RenderGroupStandings($('.ti_group_b'), body[1]['team_standings']);
+				RenderBrackets(body[2]['nodes']);
+			}
+
+		},
+		error: function(){
+			console.log("Failed to get league data.");
+		}
+	});
+}
+
+
+function GetAllMatches(filter){
+	let matches = [];
+
+	for (var i = 0; i < local_league_data.length; i++) {
+		let node_group = local_league_data[i];
+
+		for (var k = 0; k < node_group['nodes'].length; k++) {
+			if (!node_group['nodes'][k]['name']) {
+				let match_index = parseInt(k)+1;
+				node_group['nodes'][k]['name'] = node_group['name'] + ' Match ' + match_index;
+			}
+
+			if (filter == "groups") {
+				if (i < 2) {
+					matches.push(node_group['nodes'][k])
+				}
+			}else if(filter =="playoffs"){
+				if (i == 2) {
+					matches.push(node_group['nodes'][k])
+				}
+			}else{
+				matches.push(node_group['nodes'][k])
+			}
+			
+		}
+	}
+
+	return matches;
+}
+
+
+function GetAllMatchesOnDay(day){
+	let matches = GetAllMatches();
+	let filtered_matches = [];
+
+	for (var i = 0; i < matches.length; i++) {
+		let match = matches[i];
+		let match_time = new Date(match['scheduled_time']*1000);
+
+		if (match_time.getDate() == day) {
+			filtered_matches.push(match)
+		}
+	}
+
+	// sort by time
+	filtered_matches = filtered_matches.sort((a,b) =>  a.scheduled_time-b.scheduled_time )
+	return filtered_matches;
+}
+
+
+
+
+// Returns an array of dates between the two dates
+const getDatesBetween = (startDate, endDate) => {
+    const dates = [];
+
+    startDate = new Date(startDate)
+    endDate = new Date(endDate)
+
+    // Strip hours minutes seconds etc.
+    let currentDate = new Date(
+        startDate.getFullYear(),
+        startDate.getMonth(),
+        startDate.getDate()
+    );
+
+    while (currentDate <= endDate) {
+        dates.push(currentDate);
+
+        currentDate = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate() + 1, // Will increase month if over range
+        );
+    }
+
+    return dates;
+};
+
+function RenderScheduleNav() {
+	
+	let group_matches = GetAllMatches("groups");
+	let group_min_date = Math.min.apply(null, group_matches.map(function(o) { return o.scheduled_time; }))*1000;
+	let group_max_date = Math.max.apply(null, group_matches.map(function(o) { return o.scheduled_time; }))*1000;
+	let group_range = getDatesBetween(group_min_date, group_max_date);
+	
+	let playoffs_matches = GetAllMatches("playoffs");
+	let playoffs_min_date = Math.min.apply(null, playoffs_matches.map(function(o) { return o.scheduled_time; }))*1000;
+	let playoffs_max_date = Math.max.apply(null, playoffs_matches.map(function(o) { return o.scheduled_time; }))*1000;
+	let playoffs_range = getDatesBetween(playoffs_min_date, playoffs_max_date);
+
+	RenderScheduleNavDay($('.ti_schedule_tabs_nav_groups'), group_range)
+	RenderScheduleNavDay($('.ti_schedule_tabs_nav_main'), playoffs_range)
+
+
+	if ($('.ti_schedule_tabs_nav_day.selected').length == 0) {
+		let todays_day = Math.max(new Date().getDate(), 7)
+		$('.ti_schedule_tabs_nav_day[data-schedule-day="'+todays_day+'"]').addClass('selected');
+
+		let day_label = new Date(2021, 9, todays_day).toLocaleString("default",{month: "long", day: "numeric"});
+		$('.ti_schedule_tab_heading').text(day_label)
+		RenderSchedule($('.ti_schedule_tabs_matches'), GetAllMatchesOnDay(todays_day))
+	}
+}
+
+function RenderScheduleNavDay(container, range){
+	container.html('')
+	for (var i = 0; i < range.length; i++) {
+		let this_day = new Date(range[i]);
+
+		let day_e = $(`<div class="ti_schedule_tabs_nav_day"><div></div><div></div></div>`)
+		day_e.attr('data-schedule-day', this_day.getDate())
+		day_e.find('>div:first-child').text(this_day.getDate())
+		day_e.find('>div:last-child').text(this_day.toLocaleString("default", { weekday: "short" }))
+
+		container.append(day_e)
+	}
+}
+
+
+function RenderSchedule(container, matches){
+	container.html('');
+
+	for (var i = 0; i < matches.length; i++) {
+		let match = matches[i];
+
+		let match_e = $(`<div class="ti_schedule_match">
+			<div class="ti_schedule_match_group_time">
+				<div class="ti_schedule_match_group">GROUP A</div>
+				<div class="ti_schedule_match_time">10:00 AM GMT+3</div>
+			</div>
+
+			<div class="ti_schedule_match_team radiant">
+				<div class="ti_schedule_match_team_name">TBD</div>
+				<div class="ti_schedule_match_team_logo"><img src="https://dotatooltips.b-cdn.net/team_logos/team_unknown.png" /></div>
+			</div>
+
+			<div class="ti_schedule_match_vs">
+			</div>
+
+			<div class="ti_schedule_match_team dire">
+				<div class="ti_schedule_match_team_logo"><img src="https://dotatooltips.b-cdn.net/team_logos/team_unknown.png" /></div>
+				<div class="ti_schedule_match_team_name">TBD</div>
+			</div>
+
+			<div class="ti_schedule_match_details">
+				<a href="" target="_blank">
+					<div class="ti_schedule_button ti_schedule_match_open">OPEN MATCH</div>
+				</a>
+			</div>
+		</div>`)
+
+		// name
+		match_e.find('.ti_schedule_match_group').text(match['name']);
+		match_e.attr('data-node-id', match['node_id']);
+
+		// time
+		let time_label = new Date(match['scheduled_time']*1000).toLocaleString(undefined,{timeStyle: "short"})
+		let timezone_offset = new Date(match['scheduled_time']*1000).getTimezoneOffset()/60 * (-1);
+		if (timezone_offset>0) {
+			timezone_offset = '+'+timezone_offset;
+		}
+		match_e.find('.ti_schedule_match_time').text(time_label+ ' GMT' + timezone_offset);
+
+		// score
+		if (match['team_1_wins'] || match['team_2_wins']) {
+			match_e.find('.ti_schedule_match_vs').append('<div class="ti_schedule_match_vs_result"></div>')
+			match_e.find('.ti_schedule_match_vs_result').text(match['team_1_wins'] + '-'+match['team_2_wins'])
+		}else{
+			match_e.find('.ti_schedule_match_vs').append('<div class="ti_schedule_match_vs_label">VS</div>')
+		}
+
+		// team radiant
+		if (match['team_id_1']) {
+			let team = GetLocalTeamByID(match['team_id_1']);
+			if (team) {
+				match_e.find('.ti_schedule_match_team.radiant .ti_schedule_match_team_name').text(team['team_name'])
+				match_e.find('.ti_schedule_match_team.radiant .ti_schedule_match_team_logo>img').attr('src', ASSETS.team_logo_icon(match['team_id_1']))
+
+			}else{
+				console.log("NO local team found");
+			}
+		}
+
+		// team dire
+		if (match['team_id_2']) {
+			let team = GetLocalTeamByID(match['team_id_2']);
+			if (team) {
+				match_e.find('.ti_schedule_match_team.dire .ti_schedule_match_team_name').text(team['team_name'])
+				match_e.find('.ti_schedule_match_team.dire .ti_schedule_match_team_logo>img').attr('src', ASSETS.team_logo_icon(match['team_id_2']))
+
+			}else{
+				console.log("NO local team found");
+			}
+		}
+
+
+		match_e.find('.ti_schedule_match_details a').attr('href','https://www.dota2.com/esports/ti10qual/watch/13256/'+match['node_id']+'/series');
+
+
+		container.append(match_e);
+	}
+}
+
+
+
+function RenderBrackets(matches){
+	$('.ti10_bracket_match').html('')
+	$('.ti10_bracket_match').attr('class', 'ti10_bracket_match');
+
+
+	for (var i = 0; i < matches.length; i++) {
+		let match = matches[i];
+
+		let match_e = $(`<a href="" target="_blank">
+				<div class="ti10_bracket_match_box">
+				<div class="ti10_bracket_match_heading">
+					<div class="ti10_bracket_match_time"></div>
+				</div>
+
+				<div class="ti10_bracket_match_team radiant">
+					<div class="ti10_bracket_match_team_logo"><img src="https://dotatooltips.b-cdn.net/team_logos/team_unknown.png" /></div>
+					<div class="ti10_bracket_match_team_name">TBD</div>
+					<div class="ti10_bracket_match_team_score"></div>
+				</div>
+
+				<div class="ti10_bracket_match_team dire">
+					<div class="ti10_bracket_match_team_logo"><img src="https://dotatooltips.b-cdn.net/team_logos/team_unknown.png" /></div>
+					<div class="ti10_bracket_match_team_name">TBD</div>
+					<div class="ti10_bracket_match_team_score"></div>
+				</div>
+			</div>
+		</a>`)
+				
+
+		// time
+		let time_label = new Date(match['scheduled_time']*1000).toLocaleString(undefined,{timeStyle: "short"})
+		// let timezone_offset = new Date(match['scheduled_time']*1000).getTimezoneOffset()/60 * (-1);
+		// if (timezone_offset>0) {
+		//     timezone_offset = '+'+timezone_offset;
+		// }
+
+		let day_label = new Date(match['scheduled_time']*1000).toLocaleString(undefined,{month: "short", day: "numeric"});
+		match_e.find('.ti10_bracket_match_time').text(day_label + ' ' +time_label);
+
+
+
+		// score
+		if (match['team_1_wins']) {
+			match_e.find('.radiant .ti10_bracket_match_team_score').text(match['team_1_wins']);
+			if (!match['team_2_wins']) {
+				match_e.find('.dire .ti10_bracket_match_team_score').text('0');
+			}
+		}
+
+		if (match['team_2_wins']) {
+			match_e.find('.dire .ti10_bracket_match_team_score').text(match['team_2_wins']);
+			if (!match['team_1_wins']) {
+				match_e.find('.radiant .ti10_bracket_match_team_score').text('0');
+			}
+		}
+
+		// team radiant
+		if (match['team_id_1']) {
+			let team = GetLocalTeamByID(match['team_id_1']);
+			if (team) {
+				match_e.find('.ti10_bracket_match_team.radiant .ti10_bracket_match_team_name').text(team['team_tag'])
+				match_e.find('.ti10_bracket_match_team.radiant .ti10_bracket_match_team_logo>img').attr('src', ASSETS.team_logo_icon(match['team_id_1']))
+			}else{
+				console.log("NO local team found");
+			}
+		}
+
+		// team dire
+		if (match['team_id_2']) {
+			let team = GetLocalTeamByID(match['team_id_2']);
+			if (team) {
+				match_e.find('.ti10_bracket_match_team.dire .ti10_bracket_match_team_name').text(team['team_tag'])
+				match_e.find('.ti10_bracket_match_team.dire .ti10_bracket_match_team_logo>img').attr('src', ASSETS.team_logo_icon(match['team_id_2']))
+
+			}else{
+				console.log("NO local team found");
+			}
+		}
+
+
+		match_e.attr('href','https://www.dota2.com/esports/ti10qual/watch/13256/'+match['node_id']+'/series');
+
+
+
+		$('#node_id_'+match['node_id']).append(match_e);
+
+		let date_class = new Date(match['scheduled_time']*1000).getDate();
+		$('#node_id_'+match['node_id']).addClass('ti_bracket_day_'+date_class);
+		
+	}
+}
+
+
+
+// 
+// Standings
+// 
+
+
+function RenderGroupStandings(container, teams) {
+
+	container.html('');
+
+	for (var i = 0; i < teams.length; i++) {
+		let team = teams[i];
+
+		let team_row = $(`<div class="ti10_group_team_row">
+				<div class="ti10_group_position"></div>
+				<div class="ti10_group_team">
+					<div class="ti10_group_team_logo"><img src=""/></div>
+					<div class="ti10_group_team_name"></div>
+				</div>
+				<div class="ti10_group_score"></div>
+			</div>`)
+
+		team_row.find('.ti10_group_position').text(i+1)
+		team_row.find('.ti10_group_team_logo>img').attr('src', ASSETS.team_logo_icon(team['team_id']))
+		team_row.find('.ti10_group_team_name').text(team['team_name'])
+
+
+		team_row.find('.ti10_group_score').text(team['wins']+'-'+team['losses'])
+
+		container.append(team_row)
+	}
+
+}
+
+
+
+
+const TEST_TEAM_STANDINGS = [
+	{
+		"standing": 1,
+		"team_id": 15,
+		"team_name": "PSG.LGD",
+		"team_tag": "PSG.LGD",
+		"team_logo": "1768194395980560504",
+		"team_logo_url": "https://steamusercontent-a.akamaihd.net/ugc/1768194395980560504/81579A4F0055C88DACF7F52C77767A74D503CA57/",
+		"wins": 11,
+		"losses": 3,
+		"score": "1097000000000000",
+		"team_abbreviation": "PLGD",
+		"score_tiebreak_group": "0",
+		"score_tiebreak_below": "0",
+		"score_tiebreak_random": "0",
+		"is_pro": true
+	},
+	{
+		"standing": 2,
+		"team_id": 7554697,
+		"team_name": "Nigma",
+		"team_tag": "Nigma",
+		"team_logo": "1762563915141186251",
+		"team_logo_url": "https://steamusercontent-a.akamaihd.net/ugc/1762563915141186251/BEF07E4CCA6AB1C99C4D48D0B854BFCA4398B437/",
+		"wins": 10,
+		"losses": 4,
+		"score": "996000000000000",
+		"team_abbreviation": "NMA",
+		"score_tiebreak_group": "0",
+		"score_tiebreak_below": "0",
+		"score_tiebreak_random": "0",
+		"is_pro": true
+	},
+	{
+		"standing": 3,
+		"team_id": 726228,
+		"team_name": "Vici Gaming",
+		"team_tag": "VG",
+		"team_logo": "845963870798027729",
+		"team_logo_url": "https://steamusercontent-a.akamaihd.net/ugc/845963870798027729/B143B7D3225133A054AE924F5E3F628AC342E78D/",
+		"wins": 8,
+		"losses": 6,
+		"score": "794000000000000",
+		"team_abbreviation": "VG",
+		"score_tiebreak_group": "0",
+		"score_tiebreak_below": "0",
+		"score_tiebreak_random": "0",
+		"is_pro": true
+	},
+	{
+		"standing": 4,
+		"team_id": 39,
+		"team_name": "Evil Geniuses",
+		"team_tag": "EG",
+		"team_logo": "1018322454570182183",
+		"team_logo_url": "https://steamusercontent-a.akamaihd.net/ugc/1018322454570182183/EC32E8A8A202552E273B9BAF67F4FFD65C0DAB11/",
+		"wins": 7,
+		"losses": 7,
+		"score": "693000000000000",
+		"team_abbreviation": "EG",
+		"score_tiebreak_group": "1",
+		"score_tiebreak_below": "0",
+		"score_tiebreak_random": "0",
+		"is_pro": true
+	},
+	{
+		"standing": 5,
+		"team_id": 2108395,
+		"team_name": "TNC Predator",
+		"team_tag": "TNC",
+		"team_logo": "1670239211242898853",
+		"team_logo_url": "https://steamusercontent-a.akamaihd.net/ugc/1670239211242898853/6D63F79C5A9F78301B8CC0339C38BF567E7E35BE/",
+		"wins": 7,
+		"losses": 7,
+		"score": "693000000000000",
+		"team_abbreviation": "TNC",
+		"score_tiebreak_group": "-1",
+		"score_tiebreak_below": "0",
+		"score_tiebreak_random": "0",
+		"is_pro": true
+	},
+	{
+		"standing": 6,
+		"team_id": 7119388,
+		"team_name": "Team Spirit",
+		"team_tag": "TSpirit",
+		"team_logo": "1773822957617535601",
+		"team_logo_url": "https://steamusercontent-a.akamaihd.net/ugc/1773822957617535601/F40F2155B92321415E972B787C5B1B0FFF06155A/",
+		"wins": 5,
+		"losses": 9,
+		"score": "491010000000000",
+		"team_abbreviation": "TS",
+		"score_tiebreak_group": "0",
+		"score_tiebreak_below": "0",
+		"score_tiebreak_random": "0",
+		"is_pro": true
+	},
+	{
+		"standing": 7,
+		"team_id": 2163,
+		"team_name": "Team Liquid",
+		"team_tag": "Liquid",
+		"team_logo": "1762564594200433864",
+		"team_logo_url": "https://steamusercontent-a.akamaihd.net/ugc/1762564594200433864/BBC3AE3F2E89971A24F387C180F6EEBB70ACD252/",
+		"wins": 5,
+		"losses": 9,
+		"score": "490999900000000",
+		"team_abbreviation": "LIQ",
+		"score_tiebreak_group": "0",
+		"score_tiebreak_below": "0",
+		"score_tiebreak_random": "0",
+		"is_pro": true
+	},
+	{
+		"standing": 8,
+		"team_id": 8254400,
+		"team_name": "beastcoast",
+		"team_tag": "bc",
+		"team_logo": "1664609440937553639",
+		"team_logo_url": "https://steamusercontent-a.akamaihd.net/ugc/1664609440937553639/85EA3FC27708076F8ACC2E5B70E25EEC72B09CC6/",
+		"wins": 3,
+		"losses": 11,
+		"score": "289000000000000",
+		"team_abbreviation": "BC",
+		"score_tiebreak_group": "0",
+		"score_tiebreak_below": "0",
+		"score_tiebreak_random": "0",
+		"is_pro": true
+	},
+	{
+		"standing": 9,
+		"team_id": 8254400,
+		"team_name": "beastcoast",
+		"team_tag": "bc",
+		"team_logo": "1664609440937553639",
+		"team_logo_url": "https://steamusercontent-a.akamaihd.net/ugc/1664609440937553639/85EA3FC27708076F8ACC2E5B70E25EEC72B09CC6/",
+		"wins": 2,
+		"losses": 12,
+		"score": "289000000000000",
+		"team_abbreviation": "BC",
+		"score_tiebreak_group": "0",
+		"score_tiebreak_below": "0",
+		"score_tiebreak_random": "0",
+		"is_pro": true
+	}
+]

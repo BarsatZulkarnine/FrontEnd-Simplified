@@ -1,0 +1,107 @@
+var local_item_shop = {};
+
+
+function GetItemShopData(){
+	$.ajax({
+		type: 'GET',
+		cache: false,
+		url: DOTA_SHOP_URL,
+		success: function(body){
+			local_item_shop = body;
+			// console.log(local_item_shop);
+			PopulateItemShop();
+		},
+		error: function(){
+			console.log("Failed to get item_shop.");
+		}
+	});
+}
+
+
+$(function() {
+	// Get item shop data when UI is ready
+	GetItemShopData();
+
+
+
+
+
+	$('.item_shop_tabs_nav>div').click(function() {
+		let tab_id = $(this).attr('data-tab-id');
+
+		$('.item_shop_tabs_nav>.selected').removeClass('selected')
+		$(this).addClass('selected');
+
+		$('.item_shop_tabs .selected').removeClass('selected');
+		$(`.item_shop_tabs>div#${tab_id}`).addClass('selected');
+	});
+
+
+	// Item Tooltips
+	$('.item_shop_box').on("mouseenter", ".shop_item", function() {
+		var item_name = $(this).attr('data-item')
+		if (local_items && local_items[item_name]) {
+			$(this).addClass('active');
+			SetItemTooltip(local_items[item_name], $(this), "is_shop")
+			$('.item_tooltip').addClass('open');
+		}
+	});
+
+	$('.item_shop_box').on("mouseleave", ".shop_item", function() {
+		$(this).removeClass('active');
+		$('.item_tooltip').removeClass('open');
+	});
+
+
+});
+
+
+
+function PopulateItemShop(){
+	let shop_panel = $('.item_shop_box');
+
+
+	if (local_item_shop && local_item_shop['shops']) {
+		Object.keys(local_item_shop['shops']).forEach(function(category) {
+
+			let category_e = shop_panel.find(`.item_shop_category[data-category=${category}]`);
+
+			if (category_e) {
+				for (var i = 0; i < local_item_shop['shops'][category].length; i++) {
+					let item = local_item_shop['shops'][category][i];
+					let item_e = $('<div class="shop_item"><img src="" width="42px" height="30px" /></div>');
+
+					item_e.attr('data-item', item);
+					item_e.find('img').attr('src', ASSETS.itemicon(item));
+
+					category_e.find('.item_shop_category_list').append(item_e)
+				}
+			}
+		});
+	}
+	
+	// Neutrals
+	if (local_item_shop && local_item_shop['neutrals']) {
+		Object.keys(local_item_shop['neutrals']).forEach(function(tier) {
+			let tier_e = $('<div class="item_shop_neutral_tier"><div class="item_shop_neutral_tier_heading"><div class="item_shop_neutral_tier_title"></div><div class="item_shop_neutral_tier_timing"></div></div><div class="item_shop_neutral_tier_list"></div></div>');
+
+			tier_e.find('.item_shop_neutral_tier_title').text('Tier ' + tier);
+			tier_e.find('.item_shop_neutral_tier_title').addClass('tier_'+tier)
+			tier_e.find('.item_shop_neutral_tier_timing').text(local_item_shop['neutrals'][tier]['time']+'+');
+
+			for (var i = 0; i < local_item_shop['neutrals'][tier]['items'].length; i++) {
+				let item = local_item_shop['neutrals'][tier]['items'][i];
+				let item_e = $('<div class="shop_item"><img src="" width="42px" height="30px" /></div>');
+
+				item_e.attr('data-item', item);
+				item_e.find('img').attr('src', ASSETS.itemicon(item));
+
+				tier_e.find('.item_shop_neutral_tier_list').append(item_e)
+			}
+
+			$('.item_shop_neutrals').append(tier_e);
+
+		});
+	}
+
+}
