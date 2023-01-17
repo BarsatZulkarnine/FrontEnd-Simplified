@@ -12,16 +12,23 @@ async function main() {
     )
     .join("");
 }
-
+  
 main();
 
+function showUserPosts(id){
+  
+  //window.location.href = `${windows.location.origin}/user.html`
+  window.location.href = `file:///C:/Users/Barsat/Desktop/Front%20End/FronteEnd%20Simplified/work%20work/Week%204/Final%20project%20prep/user.html`
+  //console.log(id)
+}
+
 function userHtml(user) {
-  return `<div class="user-card">
+  return `<div class="user-card" onclick="showUserPosts(${user.id})">
   <div class="user-card__container">
     <h3>${user.name}</h3>
         <p><b>Email:</b> ${user.email}</p>
         <p><b>Phone:</b> ${user.phone}</p>
-        <p><b>Website:</b> <a href="https://${user.website}" target="_blank">website.website</a></p>
+        <p><b>Website:</b> <a href="https://${user.website}" target="_blank">${user.website}</a></p>
     </div>
 </div>`
 }
