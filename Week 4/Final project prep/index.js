@@ -17,6 +17,8 @@ main();
 
 function showUserPosts(id){
   
+  localStorage.setItem("id", id);
+
   //window.location.href = `${windows.location.origin}/user.html`
   window.location.href = `file:///C:/Users/Barsat/Desktop/Front%20End/FronteEnd%20Simplified/work%20work/Week%204/Final%20project%20prep/user.html`
   //console.log(id)
