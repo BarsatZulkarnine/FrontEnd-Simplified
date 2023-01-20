@@ -61,6 +61,7 @@ i:hover {
 nav {
   display: flex;
   justify-content: space-between;
+  width: 100%;
 }
 
 .nav--right-wrapper {
@@ -70,8 +71,17 @@ nav {
 }
 
 .nav--search {
-    width: 24px;
-    height: 24px;
+  background-color: #f06449;
+  color: white;
+  padding: 6px;
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  margin-right: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
 }
 
 
