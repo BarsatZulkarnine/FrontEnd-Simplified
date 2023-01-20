@@ -40,6 +40,7 @@ a {
   text-decoration: none;
   position: relative;
   transition: opacity 300ms ease;
+  color: black;
 }
 i:hover {
   opacity: 0.7;
@@ -59,39 +60,61 @@ i:hover {
 }
 
 nav {
+  width: 100%;
+  height: 10vh;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+}
+
+.nav__wrapper {
+  width: 100%;
+  max-width: 1300px;
+  margin: auto;
+  display: flex;
+
+}
+
+.nav__logo--wrapper {
   width: 100%;
 }
 
-.nav--right-wrapper {
+.logo{
+  
+  width: 250px;
+}
+
+.nav__links{
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
+ 
 }
 
-.nav--search {
-  background-color: #f06449;
-  color: white;
-  padding: 6px;
-  width: 32px;
-  height: 32px;
-  font-size: 14px;
-  margin-right: 12px;
+.nav__link{
+  padding-left: 48px;
+  font-size: 18;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.contact__btn{
   display: flex;
-  justify-content: center;
+  cursor: pointer;
+  max-height: 48px;
+  min-height: 48px;
+  padding: 12px 40px;
   align-items: center;
-  border-radius: 50%;
-}
-
-
-.nav--home {
-  padding-right: 8px;
-}
-
-.nav--button {
-  background-color: #6030b1;
-  padding: 8px 20px;
+  border: 2px #5d3eff;
   border-radius: 50px;
-  color: white;
+  background-color: #6030b1;
+  color: #fff!important;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all .35s ease;
+}
+
+.contact__btn:hover{
+  color: #5d3eff;
 }
