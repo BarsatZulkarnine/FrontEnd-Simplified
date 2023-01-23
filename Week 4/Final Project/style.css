@@ -5,6 +5,8 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
+  background-color: black;
+  
 }
 
 html {
@@ -18,7 +20,7 @@ h4,
 h5,
 h6,
 span {
-  color: #242424;
+  color: white;
   text-align: center;
   line-height: 1.25;
 }
@@ -40,7 +42,7 @@ a {
   text-decoration: none;
   position: relative;
   transition: opacity 300ms ease;
-  color: black;
+  color: white;
 }
 i:hover {
   opacity: 0.7;
@@ -59,11 +61,22 @@ i:hover {
   transform: scale(0.8);
 }
 
+.row{
+  max-width: 1300px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+#homepage {
+  max-height: 100vh;
+}
+
 nav {
   width: 100%;
   height: 10vh;
   display: flex;
   align-items: center;
+  
 }
 
 .nav__wrapper {
@@ -95,18 +108,20 @@ nav {
   font-size: 18;
   font-weight: 600;
   white-space: nowrap;
+  letter-spacing: 1px;
+
 }
 
-.contact__btn{
+.login__btn{
   display: flex;
   cursor: pointer;
   max-height: 48px;
   min-height: 48px;
   padding: 12px 40px;
   align-items: center;
-  border: 2px #5d3eff;
+  border: 2px #f4342f;
   border-radius: 50px;
-  background-color: #6030b1;
+  background-color: #8c0923 ;
   color: #fff!important;
   font-size: 13px;
   font-weight: 700;
@@ -115,6 +130,58 @@ nav {
   transition: all .35s ease;
 }
 
-.contact__btn:hover{
-  color: #5d3eff;
+.login__btn:hover{
+  background-color: #f4342f;
+}
+
+
+/*#featured-shows{
+  
+}*/
+
+.display__show{
+  background-color:black;
+  display: flex;
+  color : white;
+}
+
+.show__discriptions{
+  padding-left: 32px;
+  padding-top: 32px
+}
+
+.show__title{
+  font-size: 44px;
+  font-weight: 700;
+  align-items: center;
+}
+.show__plot{
+  font-size: 40px
+}
+
+
+
+.featured-shows{
+  display: flex;
+  width: 100%;
+}
+
+.featured__show--img{
+  width: 100%;
+  transition: all 0.5s ease;
+}
+
+.featured__show{
+  padding-top: 12px;
+  padding-left: 12px;
+  
+}
+
+.featured-shows:last-child{
+  padding-right: 12px;
+  
+}
+
+ .featured__show--img:hover{
+  transform: scale(1.1);
 }
