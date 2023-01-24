@@ -4,25 +4,25 @@ async function apiFetch() {
   );
   const defaultInputData = await defaultInput.json();
   const link = defaultInputData.Search[0].Poster;
-  const link2 = "https://cdn.motor1.com/images/mgl/mrz1e/s3/coolest-cars-feature.webp"
+    "https://cdn.motor1.com/images/mgl/mrz1e/s3/coolest-cars-feature.webp";
   document.querySelector(
     ".show__poster"
-  ).innerHTML = `<div class="display__show--img">
-    <img src="${link}" alt="">
-</div>`;
+  ).innerHTML = defaultPoster(link)
   console.log(link);
-
-
-  document.getElementById("search-button").addEventListener("click", function() {
-    document.getElementById("search-form").style.display = "block";
-  });
 }
 
-/*function defaultPoster(link){
-    return `  <div class="feature_img">
+function defaultPoster(link){
+    return  `<div class="display__show--img">
     <img src="${link}" alt="">
-</div>`
-}*/
+</div>`;
+}
 
 apiFetch();
 
+function openSearch(){
+  document.getElementById("searchbar").style.display = "flex"
+}
+
+function onSearchChange(event) {
+  event.target.value
+}
