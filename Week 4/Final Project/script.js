@@ -4,12 +4,18 @@ async function apiFetch() {
   );
   const defaultInputData = await defaultInput.json();
   const link = defaultInputData.Search[0].Poster;
+  const link2 = "https://cdn.motor1.com/images/mgl/mrz1e/s3/coolest-cars-feature.webp"
   document.querySelector(
-    ".feature__img--wrapper"
-  ).innerHTML = `  <div class="feature_img">
-    <img src="${defaultInputData.Search[0].Poster}" alt="">
+    ".show__poster"
+  ).innerHTML = `<div class="display__show--img">
+    <img src="${link}" alt="">
 </div>`;
-  console.log(defaultInputData.Search[0].Poster);
+  console.log(link);
+
+
+  document.getElementById("search-button").addEventListener("click", function() {
+    document.getElementById("search-form").style.display = "block";
+  });
 }
 
 /*function defaultPoster(link){
@@ -19,3 +25,4 @@ async function apiFetch() {
 }*/
 
 apiFetch();
+

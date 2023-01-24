@@ -1,12 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap");
-
+@import url("https://fonts.googleapis.com/css?family=Inconsolata:700");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
-  background-color: black;
-  
+  background-color: #1a1818;
 }
 
 html {
@@ -61,7 +61,7 @@ i:hover {
   transform: scale(0.8);
 }
 
-.row{
+.row {
   max-width: 1300px;
   width: 100%;
   margin: 0 auto;
@@ -76,7 +76,6 @@ nav {
   height: 10vh;
   display: flex;
   align-items: center;
-  
 }
 
 .nav__wrapper {
@@ -84,35 +83,32 @@ nav {
   max-width: 1300px;
   margin: auto;
   display: flex;
-
 }
 
 .nav__logo--wrapper {
   width: 100%;
 }
 
-.logo{
-  
+.logo {
   width: 250px;
 }
 
-.nav__links{
+.nav__links {
   display: flex;
   justify-content: space-around;
   align-items: center;
- 
 }
 
-.nav__link{
+.nav__link {
   padding-left: 48px;
   font-size: 18;
   font-weight: 600;
   white-space: nowrap;
   letter-spacing: 1px;
-
+  color: white;
 }
 
-.login__btn{
+.login__btn {
   display: flex;
   cursor: pointer;
   max-height: 48px;
@@ -121,67 +117,64 @@ nav {
   align-items: center;
   border: 2px #f4342f;
   border-radius: 50px;
-  background-color: #8c0923 ;
-  color: #fff!important;
+  background-color: #8c0923;
+  color: #fff !important;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  transition: all .35s ease;
+  transition: all 0.35s ease;
 }
 
-.login__btn:hover{
+.login__btn:hover {
   background-color: #f4342f;
 }
 
 
-/*#featured-shows{
-  
-}*/
 
-.display__show{
-  background-color:black;
+#featured-shows {
+  transition: all 0.35s ease;
+}
+
+.display__show {
+  background-color: black;
   display: flex;
-  color : white;
+  color: white;
 }
 
-.show__discriptions{
+.show__discriptions {
   padding-left: 32px;
-  padding-top: 32px
+  padding-top: 32px;
 }
 
-.show__title{
+.show__title {
   font-size: 44px;
   font-weight: 700;
   align-items: center;
 }
-.show__plot{
-  font-size: 40px
+.show__plot {
+  font-size: 40px;
 }
 
-
-
-.featured-shows{
+.featured-shows {
   display: flex;
   width: 100%;
 }
 
-.featured__show--img{
+.featured__show--img {
   width: 100%;
   transition: all 0.5s ease;
 }
 
-.featured__show{
+.featured__show {
   padding-top: 12px;
   padding-left: 12px;
-  
 }
 
-.featured-shows:last-child{
+.featured-shows:last-child {
   padding-right: 12px;
-  
 }
 
- .featured__show--img:hover{
+.featured__show--img:hover {
   transform: scale(1.1);
 }

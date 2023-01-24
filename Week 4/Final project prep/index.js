@@ -4,6 +4,7 @@
 async function main() {
   const users = await fetch("https://jsonplaceholder.typicode.com/users");
   const userData = await users.json();
+  console.log(userData);
   const userListEl = document.querySelector(".user-list");
 
   userListEl.innerHTML = userData
