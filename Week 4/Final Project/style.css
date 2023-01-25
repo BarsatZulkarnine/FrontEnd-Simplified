@@ -331,3 +331,28 @@ nav {
   color: white;
   border-radius: 6px;
 }
+
+.render__results{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.render__result{
+  width: 25%;
+  padding: 8px;
+}
+
+img{
+  width: 100%;
+}
+
+.poster__name,
+.poster__type,
+.poster__year-relased{
+  color: white;
+  display: flex;
+  justify-content:center;
+  padding : 6px;
+  font-size: 32px;
+
+}
