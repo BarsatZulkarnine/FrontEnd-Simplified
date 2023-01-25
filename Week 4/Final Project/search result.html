@@ -1,39 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <script src="search result.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <nav>
-        <div class="nav--logo-wrapper">
-            <div class="nav--logo">
-              <img src="assets/logo.png" alt="" />
-            </div>
+      <div class="nav__wrapper">
+        <div class="nav__logo--wrapper">
+          <img class="logo" src="assets/Capture-removebg-preview.png" alt="" />
+        </div>
+        <div class="nav__links">
+          <div class="nav__link nav__link--login">
+            <a class="login__btn" href="index.html">Home</a>
           </div>
-          <div class="nav--right-wrapper">
-            <div class="nav--search">
-              <button>
-                <a href="">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                </a>
-              </button>
-            </div>
-            <div class="nav--home">
-              <a href="">Home</a>
-            </div>
-            <div class="nav--contact">
-              <button class="nav--button">
-                <a href="">Contact</a>
-              </button>
-            </div>
-          </div>
+        </div>
+      </div>
     </nav>
-    
-    
-</body>
+    <section>
+      <div id="searchbar">
+        <div class="search_container">
+          <form action="">
+            <input
+              type="text"
+              placeholder="Search..."
+              onchange="onSearchChange(event)"
+            />
+            <div class="search"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="error-msg">
+      <div class="container">
+        <div class="row">
+          <div class="searchResults">
+            Search results for :
+            <span class="searchResults-modifier"> xxxx </span>
+          </div>
+          <div class="error-type1">
+            Could not find the show you were looking for
+          </div>
+          <div class="error-type2">
+            Too many results. Please be more specific
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="UI">
+      <select id="filter" onchange="filterBooks(event)">
+        <option value="" disabled selected>Sort</option>
+        <option value="MOVIE">Movie</option>
+        <option value="SERISE">Serise</option>
+      </select>
+    </section>
+    <section id="renderPosters">
+      <div class="render__results">
+        <div class="render__result">
+          <div class="poster__img">
+            <a
+              href="https://m.media-amazon.com/images/M/MV5BMTM3NTg2NDQzOF5BMl5BanBnXkFtZTcwNjc2NzQzOQ@@._V1_SX300.jpg"
+            ></a>
+          </div>
+          <div class="poster__name">FASSTTT</div>
+          <div class="poster__type">Serise</div>
+          <div class="poster__year-relased">2020</div>
+        </div>
+      </div>
+    </section>
+  </body>
 </html>

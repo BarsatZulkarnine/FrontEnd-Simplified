@@ -295,3 +295,39 @@ nav {
 .featured__show--img:hover {
   transform: scale(1.1);
 }
+
+
+
+
+
+
+
+/*
+
+  SEARCH RESULT HTML CSS
+
+
+*/
+
+.searchResults{
+  color: white;
+  font-size: 48px;
+  font-weight: 300;
+  display: flex;
+  justify-content: center;
+  padding-top: 32px;
+  padding-bottom: 16px;
+}
+
+.error-type1, .error-type2{
+  display: flex;
+  justify-content: center;
+  color: white;
+  font-size: 40px;
+}
+
+
+#filter{
+  color: white;
+  border-radius: 6px;
+}

@@ -22,7 +22,3 @@ apiFetch();
 function openSearch(){
   document.getElementById("searchbar").style.display = "flex"
 }
-
-function onSearchChange(event) {
-  event.target.value
-}
