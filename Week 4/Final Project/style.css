@@ -249,6 +249,7 @@ nav {
   font-weight: bolder;
 }
 
+
 #featured-shows {
   transition: all 0.35s ease;
 }
@@ -259,9 +260,15 @@ nav {
   color: white;
 }
 
+.featured--show__poster {
+  display: flex;
+  width: 40%;
+}
+
 .show__discriptions {
   padding-left: 32px;
   padding-top: 32px;
+  width: 60%;
 }
 
 .show__title {
