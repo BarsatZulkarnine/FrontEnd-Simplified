@@ -293,6 +293,7 @@ nav {
 .featured__show {
   padding-top: 12px;
   padding-left: 12px;
+  width: 20%;
 }
 
 .featured-shows:last-child {

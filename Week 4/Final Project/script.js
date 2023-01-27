@@ -6,7 +6,7 @@ async function apiFetch() {
   const link = defaultInputData.Search[0].Poster;
     "https://cdn.motor1.com/images/mgl/mrz1e/s3/coolest-cars-feature.webp";
   document.querySelector(
-    ".show__poster"
+    ".featured--show__poster"
   ).innerHTML = defaultPoster(link)
   console.log(link);
 }
