@@ -4,8 +4,9 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Watch Now</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="">
   </head>
   <body>
     <nav>
@@ -39,8 +40,10 @@
       <div class="container">
         <div class="row">
           <div class="searchResults">
-            Search results for :
-            <span class="searchResults-modifier"> xxxx </span>
+            <div class="search__result">
+              Search results for :
+              <span class="searchResults-modifier"> </span>
+            </div>
           </div>
           <div class="error-type1">
             Could not find the show you were looking for
@@ -52,11 +55,13 @@
       </div>
     </section>
     <section id="UI">
-      <select id="filter" onchange="filterBooks(event)">
-        <option value="" disabled selected>Sort</option>
-        <option value="MOVIE">Movie</option>
-        <option value="SERISE">Serise</option>
-      </select>
+      <div class="row">
+        <select id="filter" onchange="filterBooks(event)">
+          <option value="" disabled selected>Sort</option>
+          <option value="MOVIE">Movie</option>
+          <option value="SERISE">Serise</option>
+        </select>
+      </div>
     </section>
     <section id="renderPosters">
       <div class="container">
@@ -64,19 +69,34 @@
           <div class="render__results">
             <div class="render__result">
               <div class="poster__img">
-                <img
-                  src="https://m.media-amazon.com/images/M/MV5BMTM3NTg2NDQzOF5BMl5BanBnXkFtZTcwNjc2NzQzOQ@@._V1_SX300.jpg"
-                  alt=""
-                />
+                <img src="" alt="" />
               </div>
-              <div class="poster__name">FASSTTT</div>
-              <div class="poster__type">Serise</div>
-              <div class="poster__year-relased">2020</div>
+              <div class="poster__name"></div>
+              <div class="poster__type"></div>
+              <div class="poster__year-relased"></div>
             </div>
           </div>
         </div>
       </div>
     </section>
+    <footer>
+      <div class="container">
+        <div class="row row__column">
+          <a href="#">
+            <figure class="footer__logo">
+              <img src="" class="footer__logo--img" alt="">
+            </figure>
+          </a>
+          <div class="footer__list">
+            <a href="#" class="footer__link">Home</a>
+            <a class="footer__link no-cursor">About</a>
+            <a href="#features" class="footer__link">Books</a>
+            <a class="footer__link no-cursor">Contact</a>
+          </div>
+          <div class="footer__copyright">Copyright &copy; 2021 Library</div>
+        </div>
+      </div>
+    </footer>
   </body>
   <script src="search result.js"></script>
 </html>

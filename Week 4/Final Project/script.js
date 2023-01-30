@@ -1,4 +1,5 @@
 async function apiFetch() {
+
   const defaultInput = await fetch(
     "https://www.omdbapi.com/?apikey=8c7faaf4&s=fast"
   );
@@ -20,5 +21,10 @@ function defaultPoster(link){
 apiFetch();
 
 function openSearch(){
-  document.getElementById("searchbar").style.display = "flex"
+  document.getElementById("searchbar").style.display = "flex" 
+}
+
+function onSearchChange(event){
+  const response = event.target.value;
+  localStorage.setItem("response", response);
 }
