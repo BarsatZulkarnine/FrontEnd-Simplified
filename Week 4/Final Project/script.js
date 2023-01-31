@@ -28,3 +28,7 @@ function onSearchChange(event){
   const response = event.target.value;
   localStorage.setItem("response", response);
 }
+
+// 
+// try using hooks to solve the problem of loading
+// 
