@@ -14,12 +14,12 @@ function Home() {
   useEffect(() => {
     setTimeout(() => {
       main();
-    }, 500);
+    }, 1500);
   }, []);
 
-  return (
-    <div>
-      {users.map((user) => (
+  function renderUser() {
+    return(
+      users.map((user) => (
         <Link to={`/users/${user.id}`} key={user.id}>
           <User
             id={user.id}
@@ -28,7 +28,13 @@ function Home() {
             username={user.username}
           />
         </Link>
-      ))}
+      ))
+    )
+  }
+
+  return (
+    <div>
+      {users.lenght ? renderUser() : <h1>Loading...</h1>}
     </div>
   );
 }
