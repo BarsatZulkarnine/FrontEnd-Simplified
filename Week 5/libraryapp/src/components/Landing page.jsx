@@ -22,6 +22,6 @@ const Landing = () => {
       </header>
     </section>
   );
-};
+}
 
 export default Landing;
