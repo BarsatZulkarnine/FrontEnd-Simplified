@@ -59,6 +59,10 @@ function App() {
     return count;
   }
   
+  useEffect(() => {
+    console.log(cart);
+  }, [cart]);
+
   function calcPrices() {
     let total = 0;
     cart.forEach((item) => {
@@ -88,6 +92,7 @@ function App() {
             path="/cart"
             element={
               <Cart
+             
                 cart={cart}
                 updateCart={updateCart}
                 totals={calcPrices()}

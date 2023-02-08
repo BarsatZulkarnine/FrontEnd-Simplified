@@ -81,7 +81,7 @@ const Cart = ({ cart, updateCart, removeCart, totals }) => {
                 </div>
               )}
             </div>
-            {cart.lenght > 0 && (
+            {cart && cart.length > 0 && (
               <div className="total">
                 <div className="total__item total__sub-total">
                   <span>Subtotal</span>
