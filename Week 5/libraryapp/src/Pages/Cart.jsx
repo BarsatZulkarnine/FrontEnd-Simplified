@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import EmptyCart from "../assets/empty_cart.svg";
 
 const Cart = ({ cart, updateCart, removeCart, totals }) => {
   return (
@@ -39,7 +41,12 @@ const Cart = ({ cart, updateCart, removeCart, totals }) => {
                             </span>
                           )}
 
-                          <button className="cart__book--remove" onClick={()=>removeCart(cart)}>Remove</button>
+                          <button
+                            className="cart__book--remove"
+                            onClick={() => removeCart(cart)}
+                          >
+                            Remove
+                          </button>
                         </div>
                       </div>
                       <div className="cart__quantity">
@@ -64,27 +71,38 @@ const Cart = ({ cart, updateCart, removeCart, totals }) => {
                   );
                 })}
               </div>
+              {cart.length ===  0 && (
+                <div className="cart__empty">
+                  <img src={EmptyCart} alt="" className="cart__empty--img" />
+                  <h2>You dont have any books in your cart!</h2>
+                  <Link to="/books">
+                    <button className="btn">Browse books</button>
+                  </Link>
+                </div>
+              )}
             </div>
-            <div className="total">
-              <div className="total__item total__sub-total">
-                <span>Subtotal</span>
-                <span>${totals.subtotal}</span>
+            {cart.lenght > 0 && (
+              <div className="total">
+                <div className="total__item total__sub-total">
+                  <span>Subtotal</span>
+                  <span>${totals.subtotal}</span>
+                </div>
+                <div className="total__item total__tax">
+                  <span>Tax</span>
+                  <span>${totals.tax}</span>
+                </div>
+                <div className="total__item total__price">
+                  <span>Total</span>
+                  <span>${totals.total.toFixed(2)}</span>
+                </div>
+                <button
+                  className="btn btn__checkout no-cursor"
+                  onClick={() => alert("Havnet got arround to doing this :(")}
+                >
+                  Proceed to checkout
+                </button>
               </div>
-              <div className="total__item total__tax">
-                <span>Tax</span>
-                <span>${totals.tax}</span>
-              </div>
-              <div className="total__item total__price">
-                <span>Total</span>
-                <span>${totals.total.toFixed(2)}</span>
-              </div>
-              <button
-                className="btn btn__checkout no-cursor"
-                onClick={() => alert("Havnet got arround to doing this :(")}
-              >
-                Proceed to checkout
-              </button>
-            </div>
+            )}
           </div>
         </div>
       </main>
