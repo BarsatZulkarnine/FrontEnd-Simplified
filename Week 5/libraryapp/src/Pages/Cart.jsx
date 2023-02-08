@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-const Cart = ({ cart, updateCart }) => {
-  console.log(cart);
+const Cart = ({ cart, updateCart, removeCart, totals }) => {
   return (
     <div id="books__body">
       <main id="books__main">
@@ -40,7 +39,7 @@ const Cart = ({ cart, updateCart }) => {
                             </span>
                           )}
 
-                          <button className="cart__book--remove">Remove</button>
+                          <button className="cart__book--remove" onClick={()=>removeCart(cart)}>Remove</button>
                         </div>
                       </div>
                       <div className="cart__quantity">
@@ -57,7 +56,9 @@ const Cart = ({ cart, updateCart }) => {
                       </div>
                       <div className="cart__total">
                         $
-                        {cart.quantity * (cart.salePrice || cart.originalPrice)}
+                        {(
+                          cart.quantity * (cart.salePrice || cart.originalPrice)
+                        ).toFixed(2)}
                       </div>
                     </div>
                   );
@@ -67,15 +68,15 @@ const Cart = ({ cart, updateCart }) => {
             <div className="total">
               <div className="total__item total__sub-total">
                 <span>Subtotal</span>
-                <span></span>
+                <span>${totals.subtotal}</span>
               </div>
               <div className="total__item total__tax">
                 <span>Tax</span>
-                <span>$1.00</span>
+                <span>${totals.tax}</span>
               </div>
               <div className="total__item total__price">
                 <span>Total</span>
-                <span>$10.00</span>
+                <span>${totals.total.toFixed(2)}</span>
               </div>
               <button
                 className="btn btn__checkout no-cursor"

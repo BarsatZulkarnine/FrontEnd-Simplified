@@ -47,9 +47,21 @@ function App() {
     );
   }
 
-  useEffect(() => {
-    console.log(cart);
-  }, [cart]);
+  function removeCart(item) {
+    setCart((oldCart) => oldCart.filter((cartItem) => cartItem.id !== item.id));
+  }
+
+  function calcPrices() {
+    let total = 0;
+    cart.forEach((item) => {
+      total += (item.salePrice || item.originalPrice) * item.quantity;
+    });
+    return {
+      subtotal: (total * 0.9).toFixed(2),
+      tax: (total * 0.1).toFixed(2),
+      total,
+    };
+  }
 
   return (
     <Router>
@@ -66,7 +78,14 @@ function App() {
           />
           <Route
             path="/cart"
-            element={<Cart cart={cart} updateCart={updateCart} key={cart.id} />}
+            element={
+              <Cart
+                cart={cart}
+                updateCart={updateCart}
+                totals={calcPrices()}
+                removeCart={removeCart}
+              />
+            }
           />
         </Routes>
       </div>
