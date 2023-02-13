@@ -4,29 +4,45 @@ import "./Login.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ButtonPrimary from "./ButtonPrimary";
 import ButtonSecondary from "./ButtonSecondary";
-import { auth } from "./firebase.js";
+import { auth, db } from "./firebase.js";
 import { useDispatch } from "react-redux";
 import { login } from "./features/userSlice";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+  removeDoc,
+  deleteDoc,
+} from "firebase/firestore";
 
-function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
-  const history = useNavigate();
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
 
-  const signIn = (event) => {
-    event.preventDefault();
-    auth.signInWithEmailAndPassword(email, password).then((userAuth) => {
-      dispatch(
-        login({
-          email: userAuth.user.email,
-          uid: userAuth.user.uid,
-          displayName: userAuth.user.displayName,
-        }).catch((error) => alert(error.message))
-      );
-      history("/teslaaccount");
-    });
+function Login({email, setEmail, password, setPassword }) {
+ 
+  const navigate = useNavigate();
+  function signIn (e) {
+    e.preventDefault();
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then(({ user }) => {
+        console.log(user);
+        //setUser(user);
+       navigate('/teslaaccount')
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
+
+  
 
   return (
     <div className="login">

@@ -5,43 +5,56 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ButtonPrimary from "./ButtonPrimary";
 import ButtonSecondary from "./ButtonSecondary";
 import { useDispatch } from "react-redux";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 import { login } from "./features/userSlice";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+  removeDoc,
+  deleteDoc,
+} from "firebase/firestore";
+import "firebase/auth";
+import "firebase/firestore";
 
-function SignUp() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fName, setfName] = useState("");
-  const [lName, setlName] = useState("");
+function SignUp({email, setEmail, password, setPassword, firstName, setFirstName, lastName, setLastName }) {
+ 
+  const navigate = useNavigate()
 
-  const dispatch = useDispatch();
-  const history = useNavigate();
-
-  const signUp = (event) => {
-    email.preventDafault();
-    if (!fName) {
-      return alert("Please enter a first name");
-    }
-
-    if (!lName) {
-      return alert("Please enter a last name");
-    }
-    auth.createUserWithEmailAndPassword(email, password).then((userAuth) => {
-        userAuth.user.updateProfile({
-            displayName: fName
-        }).then(()=>{
-            dispatch(login({
-                email: userAuth.user.email,
-                uid: userAuth.user.uid,
-                displayName: userAuth.user.fName
-            })
-            )
-            history.push('/teslaaccount')
-        })
-    }).catch((error)=>alert(error.message))
+  const userData = {
+    email: email,
+    password: password,
+    firstName: firstName,
+    lastName: lastName,
   };
 
+  function signUp(e) {
+    e.preventDefault();
+    addDoc(collection(db, "posts"), userData);
+    register();
+  }
 
+  function register() {
+    console.log(email);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((user) => {
+        console.log(user);
+        navigate('/login')
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+      
+  }
 
   return (
     <div className="signUp">
@@ -62,37 +75,33 @@ function SignUp() {
       <div className="signUp__info">
         <h1>Sign Up</h1>
         <form className="signUp__form">
-          <label html for="fName">
-            First Name
-          </label>
+          <label>First Name</label>
           <input
             type="text"
-            id="fName"
-            value={fName}
-            onChange={(event) => setfName(event.target.value)}
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
           />
-          <label html for="lName">
-            Last Name
-          </label>
+          <label>Last Name</label>
           <input
             type="text"
-            id="lName"
-            value={lName}
-            onChange={(event) => setlName(event.target.value)}
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
           />
           <label htmlFor="email">Email address</label>
           <input
             type="email"
-            id="email"
+            placeholder="Email"
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
-          <label htmlFor="password">Password</label>
+          <label>Password</label>
           <input
             type="password"
-            id="password"
+            placeholder="Password"
             value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <ButtonPrimary name="Create account" type="submit" onClick={signUp} />
         </form>
